@@ -51,7 +51,23 @@ res.send('server is running');
 
 });
 
-app.use('/auth', require('./routes/AuthRoutes'))
+app.use('/auth', require('./routes/AuthRoutes'));
+
+
+app.use((req, res, next) => {
+    const error = new Error('Not found');
+    error.status = 404;
+    next(error);
+})
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+      status: false,
+      msg: error.message
+    });
+});
+
 
 app.listen(PORT, ()=> {
 
